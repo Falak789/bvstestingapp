@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Testing App</title>
+</head>
+<body>
+    <h1>API Testing Interface</h1>
+    <button onclick="callAPI('/test-login')">Test BVS Login API</button>
+    <button onclick="callAPI('/test-deposit')">Test Cash Deposit API</button>
+    <button onclick="callAPI('/test-deposit-confirmation')">Test Deposit Confirmation API</button>
+    <button onclick="callAPI('/test-withdrawal')">Test Cash withdrawal API</button>
+    <button onclick="callAPI('/test-withdrawal-confirmation')">Test withdrawal Confirmation API</button>
+    <button onclick="callAPI('/test-CNICtoMA')">Test CNICtoMA API</button>
+    <button onclick="callAPI('/test-CNICtoMA-confirmation')">Test CNICtoMA Confirmation API</button>
+    <button onclick="callAPI('/test-OTP-flow')">Test BVSAccount Registration API</button>
+    <h3>Response:</h3>
+    <pre id="response-box">Waiting for response...</pre>
+
+    <script>
+        function callAPI(endpoint) {
+            document.getElementById('response-box').innerText = "Sending request...";
+            fetch(endpoint, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('response-box').innerText = JSON.stringify(data, null, 2);
+                })
+                .catch(err => {
+                    document.getElementById('response-box').innerText = 'Error: ' + err;
+                });
+        }
+    </script>
+</body>
+</html>
