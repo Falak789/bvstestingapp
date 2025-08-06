@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/your-username/flask-api-tester.git'
+                git 'https://github.com/Falak789/bvstestingapp.git'
             }
         }
 
@@ -22,13 +22,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t flask-api-tester .'
+                sh 'docker build -t bvs-api-tester .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 5000:5000 flask-api-tester'
+                sh 'docker run -d -p 5000:5000 bvs-api-tester'
             }
         }
     }
