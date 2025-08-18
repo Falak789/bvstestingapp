@@ -1,9 +1,35 @@
 pipeline {
     agent any
+
+    environment {
+        IMAGE_NAME = "bvstestingaappp"
+        CONTAINER_NAME = "bvstestingaappp-container"
+    }
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                bat 'python --version'
+                git branch: 'master', url: 'https://github.com/Falak789/bvstestingapp.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    bat "docker build -t ${IMAGE_NAME}:latest ."
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                script {
+                    // Stop & remove if already running
+                    bat "docker rm -f ${CONTAINER_NAME} || echo 'No container to remove'"
+                    
+                    // Start a new container (mapping port 8000 -> 5000 inside container)
+                    bat "docker run -d --name ${CONTAINER_NAME} -p 8000:5000 ${IMAGE_NAME}:latest"
+                }
             }
         }
     }
