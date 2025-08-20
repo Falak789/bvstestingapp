@@ -37,7 +37,7 @@ pipeline {
 		stage('Push Docker Image') {
 			steps {
 				script {
-					bat "docker tag bvstestingwhapp:latest falak26/bvstestingwhapp:latest"
+					bat "docker tag bvstestingwebapp:latest falak26/bvstestingwebapp:latest"
 					bat "docker push falak26/${IMAGE_NAME}:latest"
 				}
 			}
