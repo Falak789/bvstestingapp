@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "bvstestingWHApp"
-        CONTAINER_NAME = "bvstestingWHApp-container"
+        IMAGE_NAME = "bvstestingwhapp"
+        CONTAINER_NAME = "bvstestingwhapp-container"
     }
 
     triggers {
