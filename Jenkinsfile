@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "bvstestingaappp"
-        CONTAINER_NAME = "bvstestingaappp-container"
+        IMAGE_NAME = "bvstestingWHaappp"
+        CONTAINER_NAME = "bvstestingWHaappp-container"
     }
 
     stages {
