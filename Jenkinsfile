@@ -1,41 +1,58 @@
 pipeline {
-    agent any
+	agent any
 
-    environment {
-        IMAGE_NAME = "bvstestingwhapp"
-        CONTAINER_NAME = "bvstestingwhapp-container"
-    }
+	environment {
+		IMAGE_NAME = "bvstestingwebapp"
+		CONTAINER_NAME = "bvstestingwebapp-container"
+	}
 
-    triggers {
-        // This will trigger the pipeline when GitHub webhook fires (on push)
-        githubPush()
-    }
+	triggers {
+		// This will trigger the pipeline when GitHub webhook fires (on push)
+		githubPush()
+	}
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url: 'https://github.com/Falak789/bvstestingapp.git'
-            }
-        }
+	stages {
+		stage('Checkout') {
+			steps {
+				git branch: 'master', url: 'https://github.com/Falak789/bvstestingapp.git'
+			}
+		}
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    bat "docker build -t ${IMAGE_NAME}:latest ."
-                }
-            }
-        }
+		stage('Build Docker Image') {
+			steps {
+				script {
+					bat "docker build -t ${IMAGE_NAME}:latest ."
+				}
+			}
+		}
 
-        stage('Run Container') {
-            steps {
-                script {
-                    // Stop & remove if already running
-                    bat "docker rm -f ${CONTAINER_NAME} || echo 'No container to remove hello world'"
+		stage('Docker Login') {
+			steps {
+				script {
+					bat "docker login -u falak26 -p FIFI-taf-321"
+				}
+			}
+		}
 
-                    // Start a new container (mapping port 8000 -> 5000 inside container)
-                    bat "docker run -d --name ${CONTAINER_NAME} -p 8081:5000 ${IMAGE_NAME}:latest"
-                }
-            }
-        }
-    }
+		stage('Push Docker Image') {
+			steps {
+				script {
+					bat "docker tag bvstestingwhapp:latest falak26/bvstestingwhapp:latest"
+					bat "docker push falak26/${IMAGE_NAME}:latest"
+				}
+			}
+		}
+
+		stage('Run Container') {
+			steps {
+				script {
+					// Stop & remove if already running
+					bat "docker rm -f ${CONTAINER_NAME} || echo 'No container to remove hello world'"
+
+					// Start a new container (mapping port 8081 -> 5000 inside container)
+					bat "docker run -d --name ${CONTAINER_NAME} -p 8081:5000 ${IMAGE_NAME}:latest"
+				}
+			}
+		}
+	}
 }
