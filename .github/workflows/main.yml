@@ -1,0 +1,41 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "master" ]   # same as Jenkins 'branch: master'
+  workflow_dispatch:          # allow manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: bvstestinggitapp
+      CONTAINER_NAME: bvstestinggitapp-container
+      DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKER_PASS: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    steps:
+      # === Checkout code (like Jenkins 'Checkout' stage)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # === Build Docker Image
+      - name: Build Docker image
+        run: docker build -t $IMAGE_NAME:latest .
+
+      # === Docker Hub Login
+      - name: Docker login
+        run: echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+
+      # === Tag & Push to Docker Hub
+      - name: Push Docker image
+        run: |
+          docker tag $IMAGE_NAME:latest $DOCKER_USER/$IMAGE_NAME:latest
+          docker push $DOCKER_USER/$IMAGE_NAME:latest
+
+      # === Deploy container locally on runner (temporary)
+      - name: Run Docker container
+        run: |
+          docker rm -f $CONTAINER_NAME || echo "No container to remove"
+          docker run -d --name $CONTAINER_NAME -p 8083:5000 $IMAGE_NAME:latest
