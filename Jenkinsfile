@@ -11,6 +11,11 @@ pipeline {
         EC2_HOST = "ubuntu@54.89.241.89"      // Replace with your EC2 user & IP
     }
 
+    triggers {
+        // This will trigger the pipeline when GitHub webhook fires (on push)
+        githubPush()
+    }
+
     stages {
         stage('Checkout') {
             steps {
